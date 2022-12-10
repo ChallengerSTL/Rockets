@@ -30,6 +30,7 @@ export default function Navbar() {
             _hover={{
               textDecoration: "none"
             }}
+            isExternal
           >
             <Button>
               Rockets Testing Data
