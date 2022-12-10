@@ -9,7 +9,7 @@ export const CartTotalProvider = ({children}) => {
   function setCartTotal(value, update_cookie=true) {
     setCartTotalBase(value);
     if (update_cookie) {
-      setCookie('cartTotal', value, {'maxAge': 60*60*5});
+      setCookie('cartTotal', value, {'maxAge': 60*5}); // 30 mins
     }
   }
 

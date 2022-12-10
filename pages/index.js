@@ -48,7 +48,7 @@ function Home({ items, admin_code }) {
     let cookie_approvedItems = JSON.parse(getCookie('approvedItems'));
     setApprovedItems(cookie_approvedItems, false);
   };
-}, [setCartTotal, setCartItems, setApprovedItems]);
+}, []);
 
   const formBackground = useColorModeValue("gray.700");
 

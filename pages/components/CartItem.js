@@ -184,6 +184,7 @@ export default function CartItem(props) {
             width="45px"
             rounded="md"
             p="3"
+            textAlign="center"
             onChange={getInputQuantity}
             value={quantity_str}
           />

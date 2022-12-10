@@ -33,7 +33,7 @@ export default function Navbar() {
             isExternal
           >
             <Button>
-              Rockets Testing Data
+              Rocket Launch Data
             </Button>
            </Link>
         </Flex>

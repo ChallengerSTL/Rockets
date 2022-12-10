@@ -8,7 +8,7 @@ export const CartItemsProvider = ({children}) => {
   function setCartItems(value, update_cookie=true) {
     setCartItemsBase(value);
     if (update_cookie) {
-      setCookie('cartItems', value, {'maxAge': 60*60*5});
+      setCookie('cartItems', value, {'maxAge': 60*5}); // 30 mins
       console.log("cookies were set");
     }
   }

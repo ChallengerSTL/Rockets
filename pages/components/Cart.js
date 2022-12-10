@@ -131,13 +131,9 @@ export default function Cart(props) {
         <TabPanel>
           <Box
             width="400px"
-            height="auto"
             margin="auto"
-            overflowY="scroll"
-            scrollbar="none"
+            overflow="auto"
             maxHeight="50vh"
-            display = "flex"
-            flexDirection="column"
             justifyContent="center"
             sx={{
               "&::-webkit-scrollbar": {

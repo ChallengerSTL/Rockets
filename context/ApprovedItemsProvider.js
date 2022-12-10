@@ -8,7 +8,7 @@ export const ApprovedItemsProvider = ({children}) => {
   function setApprovedItems(value, update_cookie=true) {
     setApprovedItemsBase(value);
     if (update_cookie) {
-      setCookie('approvedItems', value, {'maxAge': 60*60*5});
+      setCookie('approvedItems', value, {'maxAge': 60*5}); // 30 mins
     }
   }
   return (
