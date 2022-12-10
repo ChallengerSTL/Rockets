@@ -4,11 +4,7 @@ import {
   Flex,
   HStack,
   chakra,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
+  Input,
   Spacer,
   Grid,
   GridItem,
@@ -55,11 +51,25 @@ export default function ApprovedItems(props) {
 
   let cartItemsIds = Object.keys(cartItems);
   let approvedItemsIds = Object.keys(approvedItems);
-
-  const [password, setPassword] = useState("");
   if (approvedItems[id] != undefined)
     quantity = approvedItems[id].quantity;
+
+  let quantity_str = quantity.toString();
+  if (quantity_str == '0')
+    quantity_str = '';
+
+  const [password, setPassword] = useState("");
+
   const toast = useToast();
+  function display_toast(title, description, status) {
+    toast({
+      title: title,
+      description: description,
+      status: status,
+      duration: 3000,
+      isClosable: true,
+    });
+  }
 
   let itemTotal = price * quantity;
   const formatter = new Intl.NumberFormat("en-US", {
@@ -71,9 +81,6 @@ export default function ApprovedItems(props) {
     setCartTotal(cartTotal + newItemTotal);
   };
 
-  const subTotal = (newItemTotal) => {
-    setCartTotal(cartTotal - newItemTotal);
-  };
 
   function setQuantity(num) {
     let copyApprovedItems = { ...approvedItems };
@@ -83,13 +90,7 @@ export default function ApprovedItems(props) {
 
   function increment() {
     if (cartTotal + price > 1000000) {
-      toast({
-        title: "Insufficent Funds",
-        description: "You do not have enough money for this item",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
+      display_toast("Insufficent Funds", "You do not have enough money for this item", "error");
       return;
     }
     setQuantity(quantity + 1);
@@ -101,7 +102,7 @@ export default function ApprovedItems(props) {
     if (quantity > 1) {
       setQuantity(quantity - 1);
       let curTotal = (quantity - 1) * price;
-      subTotal(price);
+      addTotal(-price);
     } else {
       deleteItem(id);
     }
@@ -116,6 +117,30 @@ export default function ApprovedItems(props) {
         setApprovedItems(copyApprovedItems);
         break;
       }
+    }
+  }
+
+  function getInputQuantity(event){
+    let newQuantity = event.target.value;
+    // Input validation
+    if (newQuantity < 0) {
+      display_toast("Invalid input", "Input must be a number greater than or equal to 0", "error");
+      return;
+    }
+    if(cartTotal + ((newQuantity - quantity) * price) > 1000000){
+      display_toast("Insufficent Funds", "You do not have enough money for this item", "error");
+      return;
+    }
+
+    // Set new quantity
+    if(newQuantity == "" && quantity != 0){
+      setQuantity(0);
+      addTotal(-quantity*price);
+      event.target.value = '';
+    }
+    else if (newQuantity != ""){
+      setQuantity(newQuantity);
+      addTotal((newQuantity-quantity) * price);
     }
   }
 
@@ -167,16 +192,15 @@ export default function ApprovedItems(props) {
           <Text pr="1" onClick={decrement} cursor="pointer" display={showDec}>
             -
           </Text>
-          <Text
-            border="1px solid white"
-            rounded="md"
-            pt="1"
-            pb="1"
-            pr="4"
-            pl="4"
-          >
-            {quantity}
-          </Text>
+            <Input
+              size="sm"
+              type="number"
+              width="45px"
+              rounded="md"
+              p="3"
+              onChange={getInputQuantity}
+              value={quantity_str}
+            />
           <Text pl="1" display={showInc} onClick={increment} cursor="pointer">
             +
           </Text>

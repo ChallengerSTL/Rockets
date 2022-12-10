@@ -23,11 +23,11 @@ export default function BudgetBar() {
   }
 
   return (
-    <Box>
+    <Box mt="5" mb="2">
       <Box width="100%" ml='auto' mr='auto' pb="20px" mt="-10">
         <Heading
           as="h2"
-          fontSize="32px"
+          fontSize="30px"
           padding="5"
           textAlign="center"
           fontWeight="bold"
@@ -36,7 +36,7 @@ export default function BudgetBar() {
         </Heading>
         <Progress
           colorScheme={color}
-          height="30px"
+          height="25px"
           hasStripe
           value={cartTotal}
           rounded="full"
@@ -63,10 +63,10 @@ export default function BudgetBar() {
           alignItems="center"
           justifyContent="space-between"
         >
-          <Text fontSize="lg" as="span">
+          <Text fontSize="18px" as="span">
             Total:
           </Text>
-          <Text fontSize="xl">{formatter.format(cartTotal).slice(0,-3)}</Text>
+          <Text fontSize="18px">{formatter.format(cartTotal).slice(0,-3)}</Text>
         </Box>
       </Box>
     </Box>

@@ -26,7 +26,7 @@ export default function Category(props) {
     margin_top = "100px";
   return (
     <Box mt={margin_top} pt="10px" borderTop='1px' borderColor='gray.350'>
-      <Heading as="h2" noOfLines={1}>
+      <Heading as="h2" fontSize="2rem" noOfLines={1}>
         {props.category}
       </Heading>
       <Wrap>

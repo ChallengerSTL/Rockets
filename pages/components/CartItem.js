@@ -1,14 +1,11 @@
 import * as React from "react";
+import {useEffect, useRef} from 'react';
 import {
   Box,
   Flex,
   HStack,
   chakra,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
+  Input,
   Spacer,
   Grid,
   GridItem,
@@ -31,27 +28,37 @@ const IMAGE = "https://il.farnell.com/productimages/large/en_GB/1775788-40.jpg";
 // let quantity = 2;
 
 export default function CartItem(props) {
-
   const [cartTotal, setCartTotal] = useContext(CartTotalContext);
   const [cartItems, setCartItems] = useContext(CartItemsContext);
 
   let id = 0;
   let price = 0;
   let quantity = 0;
-  let image_link = '';
-  let name = '';
+  let image_link = "";
+  let name = "";
   if (props.item != undefined) {
     id = props.item._id;
     price = props.item.price;
     quantity = cartItems[props.item._id].quantity;
     image_link = props.item.image_link;
-    name = props.item.name
+    name = props.item.name;
   }
 
+  let quantity_str = quantity.toString();
+  if (quantity_str == '0')
+    quantity_str = ''
   let cartItemsIds = Object.keys(cartItems);
 
-  // let quantity = cartItems[props.item._id].quantity;
   const toast = useToast();
+  function display_error_toast(title, description) {
+    toast({
+      title: title,
+      description: description,
+      status: "error",
+      duration: 3000,
+      isClosable: true,
+    });
+  }
 
   let itemTotal = price * quantity;
   const formatter = new Intl.NumberFormat("en-US", {
@@ -63,10 +70,6 @@ export default function CartItem(props) {
     setCartTotal(cartTotal + newItemTotal);
   };
 
-  const subTotal = (newItemTotal) => {
-    setCartTotal(cartTotal - newItemTotal);
-  };
-
   function setQuantity(num) {
     let copyCartItems = { ...cartItems };
     copyCartItems[id].quantity = num;
@@ -75,25 +78,19 @@ export default function CartItem(props) {
 
   function increment() {
     if (cartTotal + price > 1000000) {
-      toast({
-        title: "Insufficent Funds",
-        description: "You do not have enough money for this item",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+      display_error_toast("Insufficent Funds", "You do not have enough money for this item");
       return;
     }
-    setQuantity(quantity + 1);
+    setQuantity(+quantity + 1);
     let curTotal = (quantity + 1) * price;
     addTotal(price);
   }
 
   function decrement() {
     if (quantity > 1) {
-      setQuantity(quantity - 1);
+      setQuantity(+quantity - 1);
       let curTotal = (quantity - 1) * price;
-      subTotal(price);
+      addTotal(-price);
     } else {
       deleteItem(id);
     }
@@ -112,6 +109,32 @@ export default function CartItem(props) {
     }
   }
 
+
+  function getInputQuantity(event){
+    let newQuantity = event.target.value;
+    console.log(newQuantity);
+    // Input validation
+    if (newQuantity < 0) {
+      display_error_toast("Invalid input", "Input must be a number greater than or equal to 0");
+      return;
+    }
+    if(cartTotal + ((newQuantity - quantity) * price) > 1000000){
+      display_error_toast("Insufficent Funds", "You do not have enough money for this item");
+      return;
+    }
+
+    // Set new quantity
+    if(newQuantity == "" && quantity != 0){
+      setQuantity(0);
+      addTotal(-quantity*price);
+      event.target.value = '';
+    }
+    else if (newQuantity != ""){
+      setQuantity(newQuantity);
+      addTotal((newQuantity-quantity) * price);
+    }
+  }
+
   let show = "show";
   if (cartTotal >= 1000000) {
     show = "none";
@@ -127,7 +150,7 @@ export default function CartItem(props) {
       mb="5"
       justifyContent="space-around"
     >
-      <Box display="flex" width="125px"  float="left">
+      <Box display="flex" width="125px" float="left">
         <Image
           rounded={"lg"}
           height={"125px"}
@@ -135,7 +158,7 @@ export default function CartItem(props) {
           src={image_link}
         />
       </Box>
-      <Stack  width="100px" float="left" pl="2">
+      <Stack width="100px" float="left" pl="2">
         <Text as="h4" fontWeight="400">
           {name}
         </Text>
@@ -154,16 +177,16 @@ export default function CartItem(props) {
           <Text pr="1" onClick={decrement} cursor="pointer">
             -
           </Text>
-          <Text
-            border="1px solid white"
+
+          <Input
+            size="sm"
+            type="number"
+            width="45px"
             rounded="md"
-            pt="1"
-            pb="1"
-            pr="4"
-            pl="4"
-          >
-            {quantity}
-          </Text>
+            p="3"
+            onChange={getInputQuantity}
+            value={quantity_str}
+          />
           <Text pl="1" display={show} onClick={increment} cursor="pointer">
             +
           </Text>
@@ -174,7 +197,6 @@ export default function CartItem(props) {
           position="relative"
           left="55px"
           bottom="0"
-
           onClick={function () {
             deleteItem(id);
           }}

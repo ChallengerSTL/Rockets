@@ -29,6 +29,15 @@ export default function Cart(props) {
   const [password, setPassword] = useState("");
   const [editMode, setEditMode] = useState(false);
   const toast = useToast();
+  function display_toast(title, description, status) {
+    toast({
+      title: title,
+      description: description,
+      status: status,
+      duration: 3000,
+      isClosable: true,
+    });
+  }
 
   const addTotal = (newItemTotal) => {
     setCartTotal(cartTotal + newItemTotal);
@@ -45,22 +54,23 @@ export default function Cart(props) {
   if (cartLen > 0) {
     showCart = "show";
   }
-
   if (approvedItemsIds.length > 0) {
     showApprove = "show";
   }
+  let showSaveButton = "none";
+  let showEditButton = showApprove;
+  if (editMode) {
+    showSaveButton="show";
+    showEditButton="none";
+  }
+
+
 
   const approve_input_field = useRef();
   const edit_input_field = useRef();
 
   function showIncorrectPasswordToast() {
-    toast({
-      title: "Wrong code entered!",
-      description: "Plese check your syntax.",
-      status: "error",
-      duration: 5000,
-      isClosable: true,
-    });
+    display_toast("Wrong code entered!", "Please check your syntax", "error");
   }
 
   function checkPassword(tabPannel) {
@@ -70,13 +80,19 @@ export default function Cart(props) {
         let copyApprovedItems = { ...approvedItems };
         for (let i = 0; i < cartItemsIds.length; i++) {
           let cur_id = cartItemsIds[i];
+          if (cartItems[cur_id].quantity==0) {
+            continue;
+          }
           if (approvedItemsIds.includes(cur_id)) {
             copyApprovedItems[cur_id].quantity += cartItems[cur_id].quantity;
-          } else copyApprovedItems[cur_id] = { ...cartItems[cur_id] };
+          }
+          else copyApprovedItems[cur_id] = { ...cartItems[cur_id] };
         }
         setApprovedItems(copyApprovedItems);
         setCartItems({});
         setEditMode(false);
+        setPassword('');
+        display_toast("Success!", "Items in cart were approved.", "success")
       }
       else {
         showIncorrectPasswordToast();
@@ -86,11 +102,22 @@ export default function Cart(props) {
     } else if (tabPannel == "Edit") {
       if (password == props.admin_code) {
         setEditMode(true);
+        setPassword('');
       }
       else {
         showIncorrectPasswordToast();
       }
       edit_input_field.current.value = "";
+    }
+  }
+
+  function saveApproved() {
+    setEditMode(false);
+    display_toast("Success!", "Approved items were edited", "success");
+    for (let i = 0; i < approvedItemsIds.length; i++) {
+      let cur_id = approvedItemsIds[i];
+      if (approvedItems[cur_id].quantity == 0)
+        delete approvedItems[cur_id];
     }
   }
 
@@ -108,7 +135,7 @@ export default function Cart(props) {
             margin="auto"
             overflowY="scroll"
             scrollbar="none"
-            maxHeight="55vh"
+            maxHeight="50vh"
             display = "flex"
             flexDirection="column"
             justifyContent="center"
@@ -124,36 +151,35 @@ export default function Cart(props) {
             {cartItemsIds.map((item_id) => (
               <CartItem key={item_id} item={cartItems[item_id].item} />
             ))}
-
-
-
-            <Flex width="80%" mb="5">
-              <Input
-                type="password"
-                width="80%"
-                pr="5"
-                placeholder="Enter code"
-                required
-                display={showCart}
-                onChange={(e) => {
-                  setPassword(e.currentTarget.value);
-                }}
-                float="left"
-                ref={approve_input_field}
-              />
-              <Box display={showCart} pl="5">
-                <Button
-                  size="md"
-                  colorScheme="blue"
-                  onClick={function () {
-                    checkPassword("Approve");
-                  }}
-                >
-                  Approve
-                </Button>
-              </Box>
-            </Flex>
           </Box>
+
+          <Flex width="95%" mt="3">
+            <Input
+              type="password"
+              width="80%"
+              pr="5"
+              placeholder="Enter code"
+              required
+              display={showCart}
+              onChange={(e) => {
+                setPassword(e.currentTarget.value);
+              }}
+              float="left"
+              ref={approve_input_field}
+            />
+            <Box display={showCart} pl="5">
+              <Button
+                size="md"
+                colorScheme="blue"
+                onClick={function () {
+                  checkPassword("Approve");
+                }}
+              >
+                Approve
+              </Button>
+            </Box>
+          </Flex>
+
         </TabPanel>
         <TabPanel>
         <Box
@@ -162,7 +188,7 @@ export default function Cart(props) {
             margin="auto"
             overflowY="scroll"
             scrollbar="none"
-            maxHeight="55vh"
+            maxHeight="50vh"
             sx={{
               "&::-webkit-scrollbar": {
                 display: "visible",
@@ -178,48 +204,49 @@ export default function Cart(props) {
                 editMode={editMode}
               />
             ))}
-
-            <Flex width="80%" mb="5">
-              <Input
-                type="password"
-                width="80%"
-                pr="5"
-                placeholder="Enter code"
-                required
-                display={showApprove}
-                onChange={(e) => {
-                  setPassword(e.currentTarget.value);
-                }}
-                ref = {edit_input_field}
-              />
-
-              <Box display={showApprove}>
-                <Button
-                  size="md"
-                  pr="8"
-                  ml="2"
-                  pl="8" mr="2"
-                  colorScheme="orange"
-                  onClick={function () {
-                    checkPassword("Edit");
-                  }}
-                >
-                  Edit
-                </Button>
-              </Box>
-              <Box display={showApprove}>
-                <Button
-                  size="md"
-                  colorScheme="blue"
-                  onClick={function () {
-                    setEditMode(false);
-                  }}
-                >
-                  Save
-                </Button>
-              </Box>
-            </Flex>
           </Box>
+
+          <Flex width="95%" mt="3">
+            <Input
+              type="password"
+              width="80%"
+              pr="5"
+              placeholder="Enter code"
+              required
+              display={showEditButton}
+              onChange={(e) => {
+                setPassword(e.currentTarget.value);
+              }}
+              ref = {edit_input_field}
+            />
+
+            <Box display={showEditButton}>
+              <Button
+                size="md"
+                pr="8"
+                ml="2"
+                pl="8" mr="2"
+                colorScheme="orange"
+                onClick={function () {
+                  checkPassword("Edit");
+                }}
+              >
+                Edit
+              </Button>
+            </Box>
+            <Box display={showSaveButton} margin="auto">
+              <Button
+                size="md"
+                pr="8"
+                pl="8"
+                colorScheme="blue"
+                onClick={saveApproved}
+              >
+                Save
+              </Button>
+            </Box>
+          </Flex>
+
         </TabPanel>
       </TabPanels>
     </Tabs>

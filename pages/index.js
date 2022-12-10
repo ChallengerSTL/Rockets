@@ -75,10 +75,10 @@ function Home({ items, admin_code }) {
   ];
 
   return (
-    <Box width="100%" >
+    <Box width="100%" position="relative">
       <Navbar />
       <Grid templateColumns="repeat(5, 1fr)" gap={4}>
-        <GridItem colSpan={3} width="80vh">
+        <GridItem colSpan={3} width="100%">
           <Box width="100%" margin="10">
             {categories.map((cat) => (
               <Category key={cat} items={items_dict[cat]} category={cat} />
@@ -86,23 +86,31 @@ function Home({ items, admin_code }) {
           </Box>
         </GridItem>
 
-        <GridItem colStart={4} colEnd={6} float="right" height="100vh"
+        <GridItem
+          colStart={4}
+          colEnd={6}
+          float="right"
+          height="100vh"
+          top="0"
         >
-          <Box
-            width="30%"
-            padding="5"
-            float="right"
-            position="fixed"
-            top="20"
-            right="50"
-            height="100vh"
-          >
-            <BudgetBar />
-            <Cart admin_code={admin_code}/>
-
-          </Box>
         </GridItem>
       </Grid>
+
+      <Box
+        width="400px"
+        padding="5"
+        float="right"
+        position="fixed"
+        top={0}
+        right={0}
+        height="100vh"
+        zIndex={10}
+        backgroundColor={"#1b2235"}
+        borderLeft="1px solid black"
+      >
+        <BudgetBar />
+        <Cart admin_code={admin_code}/>
+      </Box>
     </Box>
   );
 }
