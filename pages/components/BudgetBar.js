@@ -52,7 +52,7 @@ export default function BudgetBar() {
         pb="15px"
       >
         <Box
-          width="180px"
+          width="165px"
           bg="blue.900"
           p="4"
           color="white"
