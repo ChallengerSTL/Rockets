@@ -192,15 +192,25 @@ export default function ApprovedItems(props) {
           <Text pr="1" onClick={decrement} cursor="pointer" display={showDec}>
             -
           </Text>
-            <Input
-              size="sm"
-              type="number"
-              width="45px"
-              rounded="md"
-              p="3"
-              onChange={getInputQuantity}
-              value={quantity_str}
-            />
+
+          {
+            editMode ? (
+              <Input
+                size="sm"
+                type="number"
+                width="45px"
+                rounded="md"
+                p="3"
+                onChange={getInputQuantity}
+                value={quantity_str}
+              />
+            ) : (
+              <Text>
+                x{quantity_str}
+              </Text>
+            )
+          }
+
           <Text pl="1" display={showInc} onClick={increment} cursor="pointer">
             +
           </Text>
