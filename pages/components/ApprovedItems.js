@@ -52,7 +52,7 @@ export default function ApprovedItems(props) {
   let cartItemsIds = Object.keys(cartItems);
   let approvedItemsIds = Object.keys(approvedItems);
   if (approvedItems[id] != undefined)
-    quantity = approvedItems[id].quantity;
+    quantity = parseInt(approvedItems[id].quantity);
 
   let quantity_str = quantity.toString();
   if (quantity_str == '0')
@@ -94,15 +94,17 @@ export default function ApprovedItems(props) {
       return;
     }
     setQuantity(quantity + 1);
-    let curTotal = (quantity + 1) * price;
-    addTotal(price);
+    recalcTotal();
+    // let curTotal = (quantity + 1) * price;
+    // addTotal(price);
   }
 
   function decrement() {
     if (quantity > 1) {
       setQuantity(quantity - 1);
-      let curTotal = (quantity - 1) * price;
-      addTotal(-price);
+      recalcTotal();
+      // let curTotal = (quantity - 1) * price;
+      // addTotal(-price);
     } else {
       deleteItem(id);
     }
@@ -111,7 +113,8 @@ export default function ApprovedItems(props) {
   function deleteItem(item_id) {
     for (let i = 0; i < approvedItemsIds.length; i++) {
       if (approvedItemsIds[i] == item_id) {
-        setCartTotal(cartTotal - quantity * price);
+        recalcTotal();
+        // setCartTotal(cartTotal - quantity * price);
         let copyApprovedItems = { ...approvedItems };
         delete copyApprovedItems[approvedItemsIds[i]];
         setApprovedItems(copyApprovedItems);
@@ -121,7 +124,7 @@ export default function ApprovedItems(props) {
   }
 
   function getInputQuantity(event){
-    let newQuantity = event.target.value;
+    let newQuantity = parseInt(event.target.value);
     // Input validation
     if (newQuantity < 0) {
       display_toast("Invalid input", "Input must be a number greater than or equal to 0", "error");
@@ -135,13 +138,24 @@ export default function ApprovedItems(props) {
     // Set new quantity
     if(newQuantity == "" && quantity != 0){
       setQuantity(0);
-      addTotal(-quantity*price);
+      recalcTotal();
+      // addTotal(-quantity*price);
       event.target.value = '';
     }
     else if (newQuantity != ""){
       setQuantity(newQuantity);
-      addTotal((newQuantity-quantity) * price);
+      recalcTotal();
+      // addTotal((newQuantity-quantity) * price);
     }
+  }
+
+  function recalcTotal(){
+    let newCartTotal = 0;
+    for (const itemId of approvedItemsIds) {
+      const item = approvedItems[itemId];
+      newCartTotal += item.quantity * props.item.price;
+    }
+    setCartTotal(newCartTotal);
   }
 
   let showInc = "none";
