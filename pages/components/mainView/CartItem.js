@@ -20,9 +20,9 @@ import {
   useToast,
   useColorModeValue,
 } from "@chakra-ui/react";
-import CartTotalContext from "../../context/CartTotalProvider";
+import CartTotalContext from "../../../context/CartTotalProvider";
 import { useContext, useState } from "react";
-import CartItemsContext from "../../context/CartItemsProvider";
+import CartItemsContext from "../../../context/CartItemsProvider";
 
 const IMAGE = "https://il.farnell.com/productimages/large/en_GB/1775788-40.jpg";
 // let quantity = 2;
@@ -134,7 +134,7 @@ export default function CartItem(props) {
   }
 
 
-  function recalcTotal(){
+  function recalcTotal(){ // TODO: approved cart total does not update properly on refresh
     let newCartTotal = 0;
     for (const itemId of cartItemsIds) {
       const item = cartItems[itemId];
