@@ -19,7 +19,7 @@ import ApprovedItem from "./ApprovedItems";
 import ApprovedItemsContext from "../../context/ApprovedItemsProvider";
 
 export default function Cart(props) {
-  const [cartTotal, setCartTotal] = useContext(CartTotalContext);
+  const [cartTotal, setCartTotal, approvedCartTotal, setApprovedCartTotal, unapprovedCartTotal, setUnapprovedCartTotal] = useContext(CartTotalContext);
   const [cartItems, setCartItems] = useContext(CartItemsContext);
   const [approvedItems, setApprovedItems] = useContext(ApprovedItemsContext);
 
@@ -92,6 +92,7 @@ export default function Cart(props) {
         setCartItems({});
         setEditMode(false);
         setPassword('');
+        setApprovedCartTotal(cartTotal);
         display_toast("Success!", "Items in cart were approved.", "success")
       }
       else {

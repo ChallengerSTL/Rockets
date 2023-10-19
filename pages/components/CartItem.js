@@ -28,8 +28,10 @@ const IMAGE = "https://il.farnell.com/productimages/large/en_GB/1775788-40.jpg";
 // let quantity = 2;
 
 export default function CartItem(props) {
-  const [cartTotal, setCartTotal] = useContext(CartTotalContext);
+  const [cartTotal, setCartTotal, approvedCartTotal, setApprovedCartTotal, unapprovedCartTotal, setUnapprovedCartTotal] = useContext(CartTotalContext);
   const [cartItems, setCartItems] = useContext(CartItemsContext);
+
+  // const { recalcTotal } = props;
 
   let id = 0;
   let price = 0;
@@ -39,7 +41,7 @@ export default function CartItem(props) {
   if (props.item != undefined) {
     id = props.item._id;
     price = props.item.price;
-    quantity = cartItems[props.item._id].quantity;
+    quantity = parseInt(cartItems[props.item._id].quantity);
     image_link = props.item.image_link;
     name = props.item.name;
   }
@@ -66,10 +68,6 @@ export default function CartItem(props) {
     currency: "USD",
   });
 
-  const addTotal = (newItemTotal) => {
-    setCartTotal(cartTotal + newItemTotal);
-  };
-
   function setQuantity(num) {
     let copyCartItems = { ...cartItems };
     copyCartItems[id].quantity = num;
@@ -82,28 +80,28 @@ export default function CartItem(props) {
       return;
     }
     setQuantity(+quantity + 1);
-    let curTotal = (quantity + 1) * price;
-    addTotal(price);
+    recalcTotal();
   }
 
   function decrement() {
     if (quantity > 1) {
       setQuantity(+quantity - 1);
-      let curTotal = (quantity - 1) * price;
-      addTotal(-price);
     } else {
+      if (quantity == 1){
+        setQuantity(0);
+      }
       deleteItem(id);
     }
-    // else delete this cart item from cart
+    recalcTotal();
   }
 
   function deleteItem(item_id) {
     for (let i = 0; i < cartItemsIds.length; i++) {
       if (cartItemsIds[i] == item_id) {
-        setCartTotal(cartTotal - quantity * price);
         let copyCartItems = { ...cartItems };
         delete copyCartItems[cartItemsIds[i]];
         setCartItems(copyCartItems);
+        recalcTotal();
         break;
       }
     }
@@ -111,7 +109,7 @@ export default function CartItem(props) {
 
 
   function getInputQuantity(event){
-    let newQuantity = event.target.value;
+    let newQuantity = parseInt(event.target.value);
     console.log(newQuantity);
     // Input validation
     if (newQuantity < 0) {
@@ -126,13 +124,24 @@ export default function CartItem(props) {
     // Set new quantity
     if(newQuantity == "" && quantity != 0){
       setQuantity(0);
-      addTotal(-quantity*price);
+      recalcTotal();
       event.target.value = '';
     }
     else if (newQuantity != ""){
       setQuantity(newQuantity);
-      addTotal((newQuantity-quantity) * price);
+      recalcTotal();
     }
+  }
+
+
+  function recalcTotal(){
+    let newCartTotal = 0;
+    for (const itemId of cartItemsIds) {
+      const item = cartItems[itemId];
+      newCartTotal += item.quantity * item.price;
+    }
+    setUnapprovedCartTotal(newCartTotal);
+    setCartTotal(newCartTotal + approvedCartTotal);
   }
 
   let show = "show";

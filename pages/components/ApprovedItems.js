@@ -28,6 +28,9 @@ const IMAGE = "https://il.farnell.com/productimages/large/en_GB/1775788-40.jpg";
 // let quantity = 2;
 
 export default function ApprovedItems(props) {
+  const [cartTotal, setCartTotal, approvedCartTotal, setApprovedCartTotal, unapprovedCartTotal, setUnapprovedCartTotal] = useContext(CartTotalContext);
+  const [cartItems, setCartItems] = useContext(CartItemsContext);
+  const [approvedItems, setApprovedItems] = useContext(ApprovedItemsContext);
 
   let id = 0;
   let price = 0;
@@ -44,10 +47,6 @@ export default function ApprovedItems(props) {
   if (props.editMode != undefined) {
     editMode = props.editMode;
   }
-
-  const [cartTotal, setCartTotal] = useContext(CartTotalContext);
-  const [cartItems, setCartItems] = useContext(CartItemsContext);
-  const [approvedItems, setApprovedItems] = useContext(ApprovedItemsContext);
 
   let cartItemsIds = Object.keys(cartItems);
   let approvedItemsIds = Object.keys(approvedItems);
@@ -77,10 +76,6 @@ export default function ApprovedItems(props) {
     currency: "USD",
   });
 
-  const addTotal = (newItemTotal) => {
-    setCartTotal(cartTotal + newItemTotal);
-  };
-
 
   function setQuantity(num) {
     let copyApprovedItems = { ...approvedItems };
@@ -95,26 +90,24 @@ export default function ApprovedItems(props) {
     }
     setQuantity(quantity + 1);
     recalcTotal();
-    // let curTotal = (quantity + 1) * price;
-    // addTotal(price);
   }
 
   function decrement() {
     if (quantity > 1) {
       setQuantity(quantity - 1);
-      recalcTotal();
-      // let curTotal = (quantity - 1) * price;
-      // addTotal(-price);
     } else {
+      if (quantity == 1){
+        setQuantity(0);
+      }
       deleteItem(id);
     }
+    recalcTotal();
   }
 
   function deleteItem(item_id) {
     for (let i = 0; i < approvedItemsIds.length; i++) {
       if (approvedItemsIds[i] == item_id) {
         recalcTotal();
-        // setCartTotal(cartTotal - quantity * price);
         let copyApprovedItems = { ...approvedItems };
         delete copyApprovedItems[approvedItemsIds[i]];
         setApprovedItems(copyApprovedItems);
@@ -139,13 +132,11 @@ export default function ApprovedItems(props) {
     if(newQuantity == "" && quantity != 0){
       setQuantity(0);
       recalcTotal();
-      // addTotal(-quantity*price);
       event.target.value = '';
     }
     else if (newQuantity != ""){
       setQuantity(newQuantity);
       recalcTotal();
-      // addTotal((newQuantity-quantity) * price);
     }
   }
 
@@ -153,9 +144,11 @@ export default function ApprovedItems(props) {
     let newCartTotal = 0;
     for (const itemId of approvedItemsIds) {
       const item = approvedItems[itemId];
-      newCartTotal += item.quantity * props.item.price;
+      newCartTotal += item.quantity * item.price;
+      console.log(itemId+": q="+item.quantity+", p="+item.price);
     }
-    setCartTotal(newCartTotal);
+    setApprovedCartTotal(newCartTotal);
+    setCartTotal(newCartTotal + unapprovedCartTotal);
   }
 
   let showInc = "none";

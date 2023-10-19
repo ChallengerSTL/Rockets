@@ -68,7 +68,7 @@ export default function ItemCard(props) {
 
     if (!alreadyAdded) {
       let copyCartItems = { ...cartItems };
-      copyCartItems[id] = { item: item, quantity: 1 };
+      copyCartItems[id] = { item: item, quantity: 1, price: price };
       setCartItems(copyCartItems);
       setCartTotal(cartTotal + item.price);
     }
