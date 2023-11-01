@@ -25,19 +25,17 @@ import { useContext, useState } from "react";
 import CartItemsContext from "../../../context/CartItemsProvider";
 
 const IMAGE = "https://il.farnell.com/productimages/large/en_GB/1775788-40.jpg";
-// let quantity = 2;
 
 export default function CartItem(props) {
   const [cartTotal, setCartTotal, approvedCartTotal, setApprovedCartTotal, unapprovedCartTotal, setUnapprovedCartTotal] = useContext(CartTotalContext);
   const [cartItems, setCartItems] = useContext(CartItemsContext);
-
-  // const { recalcTotal } = props;
 
   let id = 0;
   let price = 0;
   let quantity = 0;
   let image_link = "";
   let name = "";
+
   if (props.item != undefined) {
     id = props.item._id;
     price = props.item.price;
@@ -96,21 +94,16 @@ export default function CartItem(props) {
   }
 
   function deleteItem(item_id) {
-    for (let i = 0; i < cartItemsIds.length; i++) {
-      if (cartItemsIds[i] == item_id) {
-        let copyCartItems = { ...cartItems };
-        delete copyCartItems[cartItemsIds[i]];
-        setCartItems(copyCartItems);
-        recalcTotal();
-        break;
-      }
-    }
+    setQuantity(0);
+    let copyCartItems = { ...cartItems };
+    delete copyCartItems[item_id];
+    setCartItems(copyCartItems);
+    recalcTotal();
   }
 
 
   function getInputQuantity(event){
     let newQuantity = parseInt(event.target.value);
-    console.log(newQuantity);
     // Input validation
     if (newQuantity < 0) {
       display_error_toast("Invalid input", "Input must be a number greater than or equal to 0");
@@ -136,7 +129,7 @@ export default function CartItem(props) {
 
   function recalcTotal(){ // TODO: approved cart total does not update properly on refresh
     let newCartTotal = 0;
-    for (const itemId of cartItemsIds) {
+    for (const itemId of Object.keys(cartItems)) {
       const item = cartItems[itemId];
       newCartTotal += item.quantity * item.price;
     }
@@ -149,6 +142,7 @@ export default function CartItem(props) {
     show = "none";
   }
 
+  recalcTotal();
   return (
     <Flex
       width="80%"

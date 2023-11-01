@@ -39,14 +39,6 @@ export default function Cart(props) {
     });
   }
 
-  const addTotal = (newItemTotal) => {
-    setCartTotal(cartTotal + newItemTotal);
-  };
-
-  const subTotal = (newItemTotal) => {
-    setCartTotal(cartTotal - newItemTotal);
-  };
-
   let cartLen = cartItemsIds.length;
 
   let showCart = "none";
