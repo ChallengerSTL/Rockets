@@ -14,41 +14,23 @@ import {
     Text,
   } from "@chakra-ui/react";
   
-  import ItemCard from "./components/mainView/ItemCard";
+  // import ItemCard from "./components/mainView/ItemCard";
   import Navbar from "./components/Navbar";
-  import CartItem from "./components/mainView/CartItem";
-  import Category from "./components/mainView/Category";
-  import BudgetBar from "./components/mainView/BudgetBar";
-  import Cart from "./components/mainView/Cart";
+  // import CartItem from "./components/mainView/CartItem";
+  // import Category from "./components/mainView/Category";
+  // import BudgetBar from "./components/mainView/BudgetBar";
+  // import Cart from "./components/mainView/Cart";
   import clientPromise from "../lib/mongodb";
+  import BudgetRequest from "./components/teacherView/BudgetRequest";
   
-  import { useContext, useState } from "react";
-  import { setCookie, getCookie, hasCookie } from 'cookies-next';
-  import CartTotalContext from "../context/CartTotalProvider";
-  import CartItemsContext from "../context/CartItemsProvider";
-  import ApprovedItemsContext from "../context/ApprovedItemsProvider";
-  import { useEffect } from 'react';
+  // import { useContext, useState } from "react";
+  // import { setCookie, getCookie, hasCookie } from 'cookies-next';
+  // import CartTotalContext from "../context/CartTotalProvider";
+  // import CartItemsContext from "../context/CartItemsProvider";
+  // import ApprovedItemsContext from "../context/ApprovedItemsProvider";
+  // import { useEffect } from 'react';
   
   function Home({ items, admin_code }) {
-    // check for cookies
-    const [cartTotal, setCartTotal] = useContext(CartTotalContext);
-    const [cartItems, setCartItems] = useContext(CartItemsContext);
-    const [approvedItems, setApprovedItems] = useContext(ApprovedItemsContext);
-  
-    useEffect(() => {
-    if (hasCookie('cartTotal')) {
-      let cookie_cartTotal = parseInt(getCookie('cartTotal'));
-      setCartTotal(cookie_cartTotal, false);
-    };
-    if (hasCookie('cartItems')) {
-      let cookie_cartItems = JSON.parse(getCookie('cartItems'));
-      setCartItems(cookie_cartItems, false);
-    };
-    if (hasCookie('approvedItems')) {
-      let cookie_approvedItems = JSON.parse(getCookie('approvedItems'));
-      setApprovedItems(cookie_approvedItems, false);
-    };
-  }, []);
   
     const formBackground = useColorModeValue("gray.700");
   
@@ -77,40 +59,15 @@ import {
     return (
       <Box width="100%" position="relative">
         <Navbar />
-        <Grid templateColumns="repeat(5, 1fr)" gap={4}>
-          <GridItem colSpan={3} width="100%">
-            <Box width="100%" margin="10">
-              {categories.map((cat) => (
-                <Category key={cat} items={items_dict[cat]} category={cat} />
-              ))}
-            </Box>
-          </GridItem>
-  
-          <GridItem
-            colStart={4}
-            colEnd={6}
-            float="right"
-            height="100vh"
-            top="0"
-          >
-          </GridItem>
-        </Grid>
-  
-        <Box
-          width="400px"
-          padding="5"
-          float="right"
-          position="fixed"
-          top={0}
-          right={0}
-          height="100vh"
-          zIndex={10}
-          backgroundColor={"#1b2235"}
-          borderLeft="1px solid black"
-        >
-          <BudgetBar />
-          <Cart admin_code={admin_code}/>
-        </Box>
+        <Box width="100%" height="60px"/>
+        <BudgetRequest admin_code={admin_code}/>
+        <BudgetRequest admin_code={admin_code}/>
+        <BudgetRequest admin_code={admin_code}/>
+        <BudgetRequest admin_code={admin_code}/>
+        <BudgetRequest admin_code={admin_code}/>
+        <BudgetRequest admin_code={admin_code}/>
+        <BudgetRequest admin_code={admin_code}/>
+        <BudgetRequest admin_code={admin_code}/>
       </Box>
     );
   }

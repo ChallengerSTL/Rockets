@@ -177,6 +177,7 @@ export default function ApprovedItems(props) {
           rounded={"lg"}
           height={"125px"}
           width={"125px"}
+          objectFit={"cover"}
           src={image_link}
         />
       </Box>

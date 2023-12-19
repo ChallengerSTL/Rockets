@@ -18,7 +18,7 @@ export default function Navbar() {
   const LOGO = 'https://www.challengertlh.com/wp-content/uploads/2015/09/siteicon.png';
   const DATA_LINK = 'https://docs.google.com/spreadsheets/d/1e2LOBWFq6agmLVsf5ouCIWbAH4i8N1bpwxHpc8LwxtI/edit?usp=sharing'
   let TEMP_LINK = '/teacherView'
-  let viewButton = 'Teacher View'
+  let viewButton = 'Teacher View →'
   
 
   const router = useRouter();
@@ -26,7 +26,7 @@ export default function Navbar() {
 
   if (currentPathname === '/teacherView') {
     TEMP_LINK = '/'
-    viewButton = 'Student View'
+    viewButton = 'Student View →'
   }
 
   return (
@@ -53,6 +53,7 @@ export default function Navbar() {
           <Link
             href={TEMP_LINK}
             color="lightblue"
+            target="_self"
             ml="20px"
             _hover={{
               textDecoration: "none"

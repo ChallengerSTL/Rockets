@@ -66,7 +66,6 @@ export default function Cart(props) {
   }
 
   function checkPassword(tabPannel) {
-    // console.log(passwo)
     if (tabPannel == "Approve") {
       if (password == props.admin_code) {
         let copyApprovedItems = { ...approvedItems };
@@ -85,6 +84,7 @@ export default function Cart(props) {
         setEditMode(false);
         setPassword('');
         setApprovedCartTotal(cartTotal);
+        setUnapprovedCartTotal(0);
         display_toast("Success!", "Items in cart were approved.", "success")
       }
       else {
