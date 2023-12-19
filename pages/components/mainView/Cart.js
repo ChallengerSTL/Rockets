@@ -126,7 +126,7 @@ export default function Cart(props) {
             width="400px"
             margin="auto"
             overflow="auto"
-            maxHeight="50vh"
+            maxHeight="calc(100vh - 350px)"
             justifyContent="center"
             sx={{
               "&::-webkit-scrollbar": {
@@ -177,7 +177,7 @@ export default function Cart(props) {
             margin="auto"
             overflowY="scroll"
             scrollbar="none"
-            maxHeight="50vh"
+            maxHeight="calc(100vh - 350px)"
             sx={{
               "&::-webkit-scrollbar": {
                 display: "visible",
