@@ -13,6 +13,8 @@ import {
   Text
 } from "@chakra-ui/react";
 import { useRouter } from 'next/router';
+import TeamNameBadge from "./team/TeamNameBadge";
+import { useTeamName } from "../../context/TeamNameProvider";
 
 export default function Navbar() {
   const LOGO = 'https://www.challengertlh.com/wp-content/uploads/2015/09/siteicon.png';
@@ -20,8 +22,8 @@ export default function Navbar() {
   let TEMP_LINK = '/teacherView'
   let viewButton = 'Teacher View →'
   
-
   const router = useRouter();
+  const { clearTeamName } = useTeamName();
   const currentPathname = router.pathname;
 
   if (currentPathname === '/teacherView') {
@@ -30,42 +32,41 @@ export default function Navbar() {
   }
 
   return (
-
-      <Box bg={useColorModeValue("gray.100", "gray.700")} px={4} width="100%"
+    <Box bg={useColorModeValue("gray.100", "gray.700")} px={4} width="100%"
       position="fixed" zIndex="2">
-        <Flex h={16} alignItems={"center"}>
-          <Image height={50} width={50} src={LOGO}  objectFit={'cover'}/>
-          <Text as="h1" fontSize="18px" ml="20px"> The Great Rocket Design Challenge </Text>
-          <Link
-            href={DATA_LINK}
-            color="lightblue"
-            ml="20px"
-            _hover={{
-              textDecoration: "none"
-            }}
-            isExternal
-          >
-            <Button>
-              Rocket Launch Data
-            </Button>
-          </Link>
+      <Flex h={16} alignItems={"center"}>
+        <Image height={50} width={50} src={LOGO} objectFit={'cover'} />
+        <Text as="h1" fontSize="18px" ml="20px"> The Great Rocket Design Challenge </Text>
 
-          <Link
-            href={TEMP_LINK}
-            color="lightblue"
-            target="_self"
-            ml="20px"
-            _hover={{
-              textDecoration: "none"
-            }}
-            isExternal
-          >
-            <Button>
-              {viewButton}
-            </Button>
-           </Link>
-        </Flex>
-      </Box>
+        {/* Team name badge (shows only when set) */}
+        <Box ml="20px">
+          <TeamNameBadge />
+        </Box>
 
+        <Link
+          href={DATA_LINK}
+          color="lightblue"
+          ml="20px"
+          _hover={{ textDecoration: "none" }}
+          isExternal
+        >
+          <Button>Rocket Launch Data</Button>
+        </Link>
+
+      {/* We hide Teacher View because the error. Delete {false && ()} to access it */}
+      {false && (
+        <Link
+          href={TEMP_LINK}
+          color="lightblue"
+          target="_self"
+          ml="20px"
+          _hover={{ textDecoration: "none" }}
+          isExternal
+        >
+          <Button>{viewButton}</Button>
+        </Link>
+        )}
+      </Flex>
+    </Box>
   );
 }
