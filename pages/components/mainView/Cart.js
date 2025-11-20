@@ -65,7 +65,7 @@ export default function Cart(props) {
     display_toast("Wrong code entered!", "Please check your syntax", "error");
   }
 
-  function checkPassword(tabPannel) {
+  async function checkPassword(tabPannel) {
     if (tabPannel == "Approve") {
       if (password == props.admin_code) {
         let copyApprovedItems = { ...approvedItems };
@@ -85,6 +85,25 @@ export default function Cart(props) {
         setPassword('');
         setApprovedCartTotal(cartTotal);
         setUnapprovedCartTotal(0);
+      await fetch("/api/submitRequest", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          team: "North Falcons",    
+          items: cartItems,
+          total: cartTotal,
+          timestamp: new Date()
+        })
+      });
+
+
+
+
+
+
+
+
+
         display_toast("Success!", "Items in cart were approved.", "success")
       }
       else {

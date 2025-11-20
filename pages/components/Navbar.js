@@ -54,7 +54,7 @@ export default function Navbar() {
         </Link>
 
       {/* We hide Teacher View because the error. Delete {false && ()} to access it */}
-      {false && (
+      { 
         <Link
           href={TEMP_LINK}
           color="lightblue"
@@ -65,7 +65,7 @@ export default function Navbar() {
         >
           <Button>{viewButton}</Button>
         </Link>
-        )}
+        }
       </Flex>
     </Box>
   );
