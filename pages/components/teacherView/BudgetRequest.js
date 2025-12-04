@@ -6,10 +6,8 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 
-export default function BudgetRequest({
-  data = { items: {} },   // ✅ safe default
-  admin_code = "",
-}) {
+export default function BudgetRequest({ data, admin_code }) {
+
   const [password, setPassword] = React.useState("");
 
   function checkPassword() {
@@ -20,9 +18,6 @@ export default function BudgetRequest({
       alert("Wrong code.");
     }
   }
-
-  const items = data?.items ?? {};        // ✅ guard
-  const rows = Object.values(items);      // safe even if empty
 
   return (
     <Flex
@@ -47,7 +42,7 @@ export default function BudgetRequest({
         </thead>
 
         <tbody>
-          {rows.map((item, idx) => (
+          {Object.values(data.items).map((item, idx) => (
             <tr key={idx}>
               <td>{item.item.name}</td>
               <td>{item.quantity}x</td>
@@ -60,7 +55,7 @@ export default function BudgetRequest({
       <Flex width="95%" mt="auto" justifyContent="space-around" mb="3">
         <Input
           type="password"
-          width="50%
+          width="50%"
           placeholder="Enter code"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
