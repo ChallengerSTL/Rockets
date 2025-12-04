@@ -1,7 +1,6 @@
 import '../styles/globals.css'
 import Head from 'next/head'
 import { ChakraProvider, CSSReset, ColorModeScript, extendTheme } from '@chakra-ui/react'
-import { useRouter } from 'next/router'
 
 import { TeamNameProvider } from '../context/TeamNameProvider'
 import { CartTotalProvider } from '../context/CartTotalProvider'
@@ -17,9 +16,6 @@ const config = {
 const theme = extendTheme({ config })
 
 function MyApp({ Component, pageProps }) {
-  const router = useRouter();
-  const isTeacherView = router.pathname === '/teacherView';
-
   return (
     <ChakraProvider theme={theme}>
       <CSSReset />
@@ -33,8 +29,8 @@ function MyApp({ Component, pageProps }) {
                 <title>Rocket Revamp</title>
               </Head>
 
-              {/* Only show the team-name modal on NON-teacher pages */}
-              {!isTeacherView && <TeamNamePrompt />}
+              {/* Show once when no team name is set */}
+              <TeamNamePrompt />
 
               <Component {...pageProps} />
             </TeamNameProvider>
